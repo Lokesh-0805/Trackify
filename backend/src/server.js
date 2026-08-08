@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const cycleRoutes = require('./routes/cycleRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const feedbackSubmissionRoutes = require('./routes/feedbackSubmissionRoutes');
 const errorMiddleware = require('./middleware/errorMiddleware');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/cycles', cycleRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/feedback', feedbackSubmissionRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
