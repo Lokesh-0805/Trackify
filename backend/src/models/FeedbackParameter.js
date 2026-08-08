@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 
 const feedbackParameterSchema = new mongoose.Schema(
   {
-    companyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Company',
-      required: [true, 'companyId is required'],
-      index: true,
-    },
     name: {
       type: String,
       required: [true, 'Parameter name is required'],
@@ -30,6 +24,6 @@ const feedbackParameterSchema = new mongoose.Schema(
   }
 );
 
-feedbackParameterSchema.index({ companyId: 1, name: 1 }, { unique: true });
+feedbackParameterSchema.index({ name: 1 }, { unique: true });
 
 module.exports = mongoose.model('FeedbackParameter', feedbackParameterSchema);
