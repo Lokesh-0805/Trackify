@@ -182,7 +182,65 @@ const getMySubmissions = async (req, res, next) => {
   }
 };
 
+const getMyHistory = async (req, res, next) => {
+  try {
+    const feedbackRecords = await Feedback.find({
+      companyId: req.user.companyId,
+      revieweeId: req.user._id,
+    })
+      .sort({ submittedAt: -1 })
+      .populate('cycleId', 'month year')
+      .lean();
+
+    if (!feedbackRecords.length) {
+      return res.json({
+        success: true,
+        count: 0,
+        history: {},
+      });
+    }
+
+    const feedbackIds = feedbackRecords.map((record) => record._id);
+    const feedbackItems = await FeedbackItem.find({ feedbackId: { $in: feedbackIds } })
+      .populate('parameterId', 'name')
+      .lean();
+
+    const itemsByFeedbackId = feedbackItems.reduce((acc, item) => {
+      const key = item.feedbackId.toString();
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    }, {});
+
+    const history = feedbackRecords.reduce((acc, record) => {
+      const cycleLabel = `${record.cycleId ? record.cycleId.month : '?'} ${record.cycleId ? record.cycleId.year : '?'}`.trim();
+      const points = {};
+
+      const items = itemsByFeedbackId[record._id.toString()] || [];
+      items.forEach((item) => {
+        if (item.parameterId && item.parameterId.name) {
+          points[item.parameterId.name] = item.score;
+        }
+      });
+
+      acc[cycleLabel] = points;
+      return acc;
+    }, {});
+
+    res.json({
+      success: true,
+      count: feedbackRecords.length,
+      history,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   submitFeedback,
   getMySubmissions,
+  getMyHistory,
 };
