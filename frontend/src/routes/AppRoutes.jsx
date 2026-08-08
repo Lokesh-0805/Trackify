@@ -19,6 +19,7 @@ const AppRoutes = () => {
           <Route path="/employee" element={<EmployeeDashboard />} />
           <Route path="/give-feedback" element={<GiveFeedback />} />
           <Route path="/feedback-history" element={<FeedbackHistory />} />
+          <Route path="/employee/history" element={<FeedbackHistory />} />
           <Route path="/employee/feedback/:assignmentId" element={<FeedbackFormPlaceholder />} />
         </Route>
 
