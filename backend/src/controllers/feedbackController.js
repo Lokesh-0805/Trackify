@@ -144,6 +144,20 @@ const submitFeedback = async (req, res, next) => {
   }
 };
 
+const getFeedbackParameters = async (req, res, next) => {
+  try {
+    const parameters = await FeedbackParameter.find({ active: true }).sort({ createdAt: 1 }).lean();
+
+    res.json({
+      success: true,
+      count: parameters.length,
+      parameters,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getMySubmissions = async (req, res, next) => {
   try {
     const submissions = await Feedback.find({
@@ -241,6 +255,7 @@ const getMyHistory = async (req, res, next) => {
 
 module.exports = {
   submitFeedback,
+  getFeedbackParameters,
   getMySubmissions,
   getMyHistory,
 };
